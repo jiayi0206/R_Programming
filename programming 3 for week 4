@@ -1,0 +1,52 @@
+2 Finding the b est hospital in a state
+Write a function called best that take two arguments: the 2-character abbreviated name of a state and an
+outcome name. The function reads the outcome-of-care-measures.csv file and returns a character vector
+with the name of the hospital that has the best (i.e. lowest) 30-day mortality for the specified outcome
+in that state. The hospital name is the name provided in the Hospital.Name variable. The outcomes can
+be one of “heart attack”, “heart failure”, or “pneumonia”. Hospitals that do not have data on a particular
+outcome should be excluded from the set of hospitals when deciding the rankings.
+Handling ties. If there is a tie for the best hospital for a given outcome, then the hospital names should
+be sorted in alphabetical order and the first hospital in that set should be chosen (i.e. if hospitals “b”, “c”,
+and “f” are tied for best, then hospital “b” should be returned).
+
+
+best <- function(state, outcome) {
+  ## Read outcome data
+     data <- read.csv("outcome-of-care-measures.csv", colClasses = "character")
+  ## Check that state and outcome are valid
+     if (!state %in% unique(data[,7])){
+        stop("invalid state")
+       
+     }
+  ## Return hospital name in that state with lowest 30-day death
+      switch(outcome, 'heart attack' = {
+        col=11    },   'heart failure' = {
+          col = 17 }, 'pneumonia' = {
+            col = 23 }, 
+           stop("invalid outcome")
+          )
+    dataframe = data[data$State == state, c(2,col)]
+    
+    dataframe[which.min(dataframe[,2]),1]
+
+}
+
+
+
+
+##switch
+##switch evaluates EXPR and accordingly chooses one of the further arguments (in ...).
+centre <- function(x, type) {
+   switch(type,
+                  mean = mean(x),
+                  median = median(x),
+                  trimmed = mean(x, trim = .1))
+   }
+x <- rcauchy(10)
+
+centre(x, "mean")
+##[1] 0.8760325
+centre(x, "median")
+##[1] 0.5360891
+centre(x, "trimmed")
+##[1] 0.6086504
